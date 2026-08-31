@@ -131,6 +131,7 @@ static async Task RejectsDuplicates()
     using var duplicateResult = await PostGraphQLAsync(server.Client, mutation, variables);
 
     Assert(firstResult.StatusCode == 200, $"Expected HTTP 200, got {firstResult.StatusCode}.");
+    Assert(!firstResult.Document.RootElement.TryGetProperty("errors", out _), "Expected first creation to succeed without errors.");
     Assert(firstResult.Document.RootElement.GetProperty("data").GetProperty("createRepository").TryGetProperty("id", out _), "Expected first creation to succeed.");
     Assert(duplicateResult.StatusCode == 200, $"Expected HTTP 200, got {duplicateResult.StatusCode}.");
     Assert(duplicateResult.Document.RootElement.TryGetProperty("errors", out var errors), "Expected duplicate error.");

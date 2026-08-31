@@ -49,7 +49,15 @@ public sealed class RepositoryStore
             "Exemple d'API GraphQL pour exposer des repositories GitHub.",
             "https://github.com/HamzaElMontassirPro/Exemple-GraphQL")
     ];
-    private int nextId = 2;
+    private int nextId;
+
+    public RepositoryStore()
+    {
+        nextId = repositories
+            .Select(repository => int.TryParse(repository.Id, out var id) ? id : 0)
+            .DefaultIfEmpty(0)
+            .Max() + 1;
+    }
 
     public IReadOnlyList<Repository> GetAll()
     {
