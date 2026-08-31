@@ -75,7 +75,9 @@ function sendJson(response, statusCode, payload) {
   response.end(JSON.stringify(payload));
 }
 
-function createGraphQLServer(rootValue = createRepositoryStore()) {
+function createGraphQLServer(rootValue) {
+  const resolvers = rootValue || createRepositoryStore();
+
   return http.createServer(async (request, response) => {
     const { pathname } = new URL(request.url, 'http://localhost');
 
@@ -111,7 +113,7 @@ function createGraphQLServer(rootValue = createRepositoryStore()) {
     const result = await graphql({
       schema,
       source: payload.query,
-      rootValue,
+      rootValue: resolvers,
       variableValues: payload.variables,
       operationName: payload.operationName
     });
