@@ -95,10 +95,10 @@ export const typeDefs = `#graphql
 
   type Mutation {
     createProject(input: CreateProjectInput!): Project!
-    updateProject(id: ID!, input: UpdateProjectInput!): Project!
+    updateProject(id: ID!, input: UpdateProjectInput!): Project
     deleteProject(id: ID!): Boolean!
     createTask(input: CreateTaskInput!): Task!
-    updateTaskStatus(id: ID!, status: TaskStatus!): Task!
+    updateTaskStatus(id: ID!, status: TaskStatus!): Task
     deleteTask(id: ID!): Boolean!
   }
 `;
@@ -132,7 +132,7 @@ export const resolvers = {
       const project = findProject(id);
 
       if (!project) {
-        throw new Error('Projet introuvable.');
+        return null;
       }
 
       for (const [key, value] of Object.entries(input)) {
@@ -176,7 +176,7 @@ export const resolvers = {
       const task = findTask(id);
 
       if (!task) {
-        throw new Error('Tâche introuvable.');
+        return null;
       }
 
       task.status = status;

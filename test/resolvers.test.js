@@ -36,6 +36,17 @@ describe('resolvers GraphQL', () => {
     assert.equal(project.description, 'Nouvelle description.');
   });
 
+  it('renvoie null quand un projet à mettre à jour est introuvable', () => {
+    const project = resolvers.Mutation.updateProject(null, {
+      id: 'project-404',
+      input: {
+        name: 'Projet inconnu',
+      },
+    });
+
+    assert.equal(project, null);
+  });
+
   it('crée une tâche dans un projet existant', () => {
     const task = resolvers.Mutation.createTask(null, {
       input: {
@@ -56,6 +67,15 @@ describe('resolvers GraphQL', () => {
     });
 
     assert.equal(task.status, 'DONE');
+  });
+
+  it('renvoie null quand une tâche à mettre à jour est introuvable', () => {
+    const task = resolvers.Mutation.updateTaskStatus(null, {
+      id: 'task-404',
+      status: 'DONE',
+    });
+
+    assert.equal(task, null);
   });
 
   it('supprime aussi les tâches quand un projet est supprimé', () => {
