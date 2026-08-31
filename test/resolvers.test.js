@@ -82,7 +82,12 @@ describe('resolvers GraphQL', () => {
             projectId: 'project-404',
           },
         }),
-      (error) => error.message === 'Projet introuvable.' && error.extensions.code === 'NOT_FOUND',
+      (error) => {
+        assert.equal(error.message, 'Projet introuvable.');
+        assert.equal(error.extensions.code, 'NOT_FOUND');
+
+        return true;
+      },
     );
   });
 

@@ -39,15 +39,15 @@ const initialTasks = [
   },
 ];
 
-let projects = structuredClone(initialProjects);
-let tasks = structuredClone(initialTasks);
+const projects = structuredClone(initialProjects);
+const tasks = structuredClone(initialTasks);
 
 const findProject = (id) => projects.find((project) => project.id === id);
 const findTask = (id) => tasks.find((task) => task.id === id);
 
 export const resetData = () => {
-  projects = structuredClone(initialProjects);
-  tasks = structuredClone(initialTasks);
+  projects.splice(0, projects.length, ...structuredClone(initialProjects));
+  tasks.splice(0, tasks.length, ...structuredClone(initialTasks));
 };
 
 export const typeDefs = `#graphql
@@ -154,8 +154,16 @@ export const resolvers = {
         return false;
       }
 
-      projects = projects.filter((project) => project.id !== id);
-      tasks = tasks.filter((task) => task.projectId !== id);
+      projects.splice(
+        0,
+        projects.length,
+        ...projects.filter((project) => project.id !== id),
+      );
+      tasks.splice(
+        0,
+        tasks.length,
+        ...tasks.filter((task) => task.projectId !== id),
+      );
 
       return true;
     },
@@ -198,7 +206,11 @@ export const resolvers = {
         return false;
       }
 
-      tasks = tasks.filter((task) => task.id !== id);
+      tasks.splice(
+        0,
+        tasks.length,
+        ...tasks.filter((task) => task.id !== id),
+      );
 
       return true;
     },
