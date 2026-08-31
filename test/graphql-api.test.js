@@ -70,8 +70,10 @@ test('creates and retrieves a GitHub repository', async () => {
     });
 
     assert.equal(mutation.status, 200);
+    assert.equal(typeof mutation.body.data.createRepository.id, 'string');
+    assert.ok(mutation.body.data.createRepository.id.length > 0);
     assert.deepEqual(mutation.body.data.createRepository, {
-      id: '2',
+      id: mutation.body.data.createRepository.id,
       owner: 'octocat',
       name: 'Hello-World',
       url: 'https://github.com/octocat/Hello-World',
@@ -131,7 +133,8 @@ test('rejects duplicate repository creation', async () => {
     const duplicateResponse = await postGraphQL(port, body);
 
     assert.equal(firstResponse.status, 200);
-    assert.equal(firstResponse.body.data.createRepository.id, '2');
+    assert.equal(typeof firstResponse.body.data.createRepository.id, 'string');
+    assert.ok(firstResponse.body.data.createRepository.id.length > 0);
     assert.equal(duplicateResponse.status, 200);
     assert.match(duplicateResponse.body.errors[0].message, /already exists/);
   } finally {

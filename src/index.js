@@ -4,5 +4,5 @@ const port = Number(process.env.PORT || 4000);
 const server = createGraphQLServer();
 
 server.listen(port, () => {
-  console.log(`API GraphQL disponible sur http://localhost:${port}/graphql`);
+  console.log(`GraphQL API available at http://localhost:${port}/graphql`);
 });
