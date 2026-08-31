@@ -135,7 +135,11 @@ export const resolvers = {
         throw new Error('Projet introuvable.');
       }
 
-      Object.assign(project, input);
+      for (const [key, value] of Object.entries(input)) {
+        if (value !== undefined) {
+          project[key] = value;
+        }
+      }
 
       return project;
     },
