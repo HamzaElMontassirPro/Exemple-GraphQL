@@ -6,7 +6,7 @@ const initialProjects = [
   {
     id: 'project-1',
     name: 'Application de gestion',
-    description: 'Projet exemple inspiré d’une application personnelle de gestion.',
+    description: "Projet exemple inspiré d'une application personnelle de gestion.",
   },
   {
     id: 'project-2',
@@ -33,7 +33,7 @@ const initialTasks = [
   {
     id: 'task-3',
     title: 'Préparer la documentation',
-    description: 'Expliquer comment lancer et tester l’API.',
+    description: "Expliquer comment lancer et tester l'API.",
     status: 'TODO',
     projectId: 'project-2',
   },
