@@ -1,0 +1,28 @@
+{
+  "name": "exemple-graphql",
+  "version": "1.0.0",
+  "description": "Exemple d'API GraphQL pour gérer des projets et des tâches.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://localhost:26831/HamzaElMontassirPro/Exemple-GraphQL"
+  },
+  "keywords": [
+    "graphql",
+    "apollo",
+    "api",
+    "gestion"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^5.5.1",
+    "graphql": "^16.14.2"
+  }
+}
