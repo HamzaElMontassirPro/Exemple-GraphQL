@@ -17,7 +17,7 @@ public sealed class RepositoryStore
     public RepositoryStore()
     {
         nextId = repositories
-            .Select(repository => int.Parse(repository.Id))
+            .Select(repository => int.TryParse(repository.Id, out var id) ? id : 0)
             .DefaultIfEmpty(0)
             .Max();
     }
@@ -48,7 +48,7 @@ public sealed class RepositoryStore
             }
 
             var repository = new Repository(
-                (++nextId).ToString(),
+                Interlocked.Increment(ref nextId).ToString(),
                 input.Owner,
                 input.Name,
                 input.Description,
