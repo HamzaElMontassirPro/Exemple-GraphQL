@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ExempleGraphQL.Api/ExempleGraphQL.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ExempleGraphQL.Api.Tests/ExempleGraphQL.Api.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,20 +1,24 @@
 # Exemple GraphQL
 
-API GraphQL minimale en Node.js pour exposer des repositories GitHub.
+API GraphQL minimale en C# avec ASP.NET Core et Hot Chocolate pour exposer des repositories GitHub.
+
+## Prérequis
+
+- .NET 10 SDK
 
 ## Installation
 
 ```bash
-npm install
+dotnet restore
 ```
 
 ## Lancer l'API
 
 ```bash
-npm start
+dotnet run --project src/ExempleGraphQL.Api
 ```
 
-L'endpoint GraphQL est disponible en `POST http://localhost:4000/graphql`.
+L'endpoint GraphQL est disponible en `POST http://localhost:5000/graphql` ou sur l'URL affichée par ASP.NET Core.
 
 Exemple de requête :
 
@@ -28,8 +32,21 @@ Exemple de requête :
 }
 ```
 
+Exemple de mutation :
+
+```graphql
+mutation {
+  createRepository(input: { owner: "octocat", name: "Hello-World", description: "Repository de démonstration" }) {
+    id
+    owner
+    name
+    url
+  }
+}
+```
+
 ## Tests
 
 ```bash
-npm test
+dotnet run --project tests/ExempleGraphQL.Api.Tests
 ```
