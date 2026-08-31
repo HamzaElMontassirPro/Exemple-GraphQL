@@ -91,3 +91,19 @@ test('creates and retrieves a GitHub repository', async () => {
     await close(server);
   }
 });
+
+test('returns GraphQL errors with an HTTP 200 response', async () => {
+  const server = createGraphQLServer();
+  const port = await listen(server);
+
+  try {
+    const response = await postGraphQL(port, {
+      query: '{ unknownField }'
+    });
+
+    assert.equal(response.status, 200);
+    assert.ok(response.body.errors.length > 0);
+  } finally {
+    await close(server);
+  }
+});

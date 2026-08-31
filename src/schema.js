@@ -16,7 +16,6 @@ const schema = buildSchema(`
   }
 
   type Query {
-    hello: String!
     repositories: [Repository!]!
     repository(owner: String!, name: String!): Repository
   }
@@ -40,7 +39,6 @@ function createRepositoryStore(initialRepositories = defaultRepositories) {
   const repositories = initialRepositories.map((repository) => ({ ...repository }));
 
   return {
-    hello: () => 'API GraphQL opérationnelle',
     repositories: () => repositories,
     repository: ({ owner, name }) => repositories.find(
       (item) => item.owner.toLowerCase() === owner.toLowerCase()

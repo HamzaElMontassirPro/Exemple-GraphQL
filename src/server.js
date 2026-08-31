@@ -8,13 +8,12 @@ function readJsonBody(request) {
   return new Promise((resolve, reject) => {
     let body = '';
     let size = 0;
+    let tooLarge = false;
 
     request.on('data', (chunk) => {
       size += chunk.length;
       if (size > maxBodySize) {
-        const error = new Error('Payload too large');
-        error.code = 'PAYLOAD_TOO_LARGE';
-        reject(error);
+        tooLarge = true;
         return;
       }
 
@@ -22,6 +21,13 @@ function readJsonBody(request) {
     });
 
     request.on('end', () => {
+      if (tooLarge) {
+        const error = new Error('Payload too large');
+        error.code = 'PAYLOAD_TOO_LARGE';
+        reject(error);
+        return;
+      }
+
       if (!body) {
         resolve({});
         return;
@@ -84,7 +90,7 @@ function createGraphQLServer(rootValue = createRepositoryStore()) {
       operationName: payload.operationName
     });
 
-    sendJson(response, result.errors ? 400 : 200, result);
+    sendJson(response, 200, result);
   });
 }
 
