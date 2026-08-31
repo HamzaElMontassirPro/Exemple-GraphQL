@@ -8,7 +8,7 @@ describe('resolvers GraphQL', () => {
     resetData();
   });
 
-  it('liste les projets avec leurs tâches', () => {
+  it('lists projects with their tasks', () => {
     const projects = resolvers.Query.projects();
     const projectTasks = resolvers.Project.tasks(projects[0]);
 
@@ -16,7 +16,7 @@ describe('resolvers GraphQL', () => {
     assert.equal(projectTasks.length, 2);
   });
 
-  it('récupère un projet et une tâche par identifiant', () => {
+  it('gets a project and a task by id', () => {
     const project = resolvers.Query.project(null, { id: 'project-1' });
     const task = resolvers.Query.task(null, { id: 'task-1' });
 
@@ -24,7 +24,7 @@ describe('resolvers GraphQL', () => {
     assert.equal(task.title, 'Créer le schéma GraphQL');
   });
 
-  it('met à jour partiellement un projet sans effacer les champs absents', () => {
+  it('partially updates a project without clearing absent fields', () => {
     const project = resolvers.Mutation.updateProject(null, {
       id: 'project-1',
       input: {
@@ -36,7 +36,7 @@ describe('resolvers GraphQL', () => {
     assert.equal(project.description, 'Nouvelle description.');
   });
 
-  it('renvoie null quand un projet à mettre à jour est introuvable', () => {
+  it('returns null when updating an unknown project', () => {
     const project = resolvers.Mutation.updateProject(null, {
       id: 'project-404',
       input: {
@@ -47,7 +47,7 @@ describe('resolvers GraphQL', () => {
     assert.equal(project, null);
   });
 
-  it('crée un projet', () => {
+  it('creates a project', () => {
     const project = resolvers.Mutation.createProject(null, {
       input: {
         name: 'Nouveau projet',
@@ -59,7 +59,7 @@ describe('resolvers GraphQL', () => {
     assert.equal(resolvers.Query.project(null, { id: project.id }).description, 'Projet créé pendant le test.');
   });
 
-  it('crée une tâche dans un projet existant', () => {
+  it('creates a task in an existing project', () => {
     const task = resolvers.Mutation.createTask(null, {
       input: {
         title: 'Tester les mutations',
@@ -72,7 +72,7 @@ describe('resolvers GraphQL', () => {
     assert.equal(resolvers.Task.project(task).id, 'project-1');
   });
 
-  it('refuse de créer une tâche dans un projet introuvable', () => {
+  it('rejects task creation for an unknown project', () => {
     assert.throws(
       () =>
         resolvers.Mutation.createTask(null, {
@@ -82,11 +82,11 @@ describe('resolvers GraphQL', () => {
             projectId: 'project-404',
           },
         }),
-      /Projet introuvable\./,
+      (error) => error.message === 'Projet introuvable.' && error.extensions.code === 'NOT_FOUND',
     );
   });
 
-  it('met à jour le statut d’une tâche', () => {
+  it('updates a task status', () => {
     const task = resolvers.Mutation.updateTaskStatus(null, {
       id: 'task-2',
       status: 'DONE',
@@ -95,7 +95,7 @@ describe('resolvers GraphQL', () => {
     assert.equal(task.status, 'DONE');
   });
 
-  it('renvoie null quand une tâche à mettre à jour est introuvable', () => {
+  it('returns null when updating an unknown task', () => {
     const task = resolvers.Mutation.updateTaskStatus(null, {
       id: 'task-404',
       status: 'DONE',
@@ -104,7 +104,7 @@ describe('resolvers GraphQL', () => {
     assert.equal(task, null);
   });
 
-  it('supprime une tâche', () => {
+  it('deletes a task', () => {
     const deleted = resolvers.Mutation.deleteTask(null, { id: 'task-2' });
     const task = resolvers.Query.task(null, { id: 'task-2' });
 
@@ -112,7 +112,7 @@ describe('resolvers GraphQL', () => {
     assert.equal(task, null);
   });
 
-  it('supprime aussi les tâches quand un projet est supprimé', () => {
+  it('also deletes tasks when deleting a project', () => {
     const deleted = resolvers.Mutation.deleteProject(null, { id: 'project-1' });
     const remainingTasks = resolvers.Query.tasks(null, { projectId: 'project-1' });
 

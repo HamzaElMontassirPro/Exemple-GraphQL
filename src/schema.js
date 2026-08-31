@@ -1,5 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
+import { GraphQLError } from 'graphql';
+
 const initialProjects = [
   {
     id: 'project-1',
@@ -159,7 +161,11 @@ export const resolvers = {
     },
     createTask: (_parent, { input }) => {
       if (!findProject(input.projectId)) {
-        throw new Error('Projet introuvable.');
+        throw new GraphQLError('Projet introuvable.', {
+          extensions: {
+            code: 'NOT_FOUND',
+          },
+        });
       }
 
       const task = {
