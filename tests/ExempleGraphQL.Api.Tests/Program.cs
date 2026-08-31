@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
@@ -119,7 +118,7 @@ static void Assert(bool condition, string message)
 {
     if (!condition)
     {
-        throw new UnreachableException(message);
+        throw new Exception(message);
     }
 }
 

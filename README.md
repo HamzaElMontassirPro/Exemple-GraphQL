@@ -18,7 +18,7 @@ dotnet restore
 dotnet run --project src/ExempleGraphQL.Api
 ```
 
-L'endpoint GraphQL est disponible en `POST http://localhost:5000/graphql` ou sur l'URL affichée par ASP.NET Core.
+L'endpoint GraphQL est disponible en `POST http://localhost:5100/graphql` ou sur l'URL affichée par ASP.NET Core.
 
 Exemple de requête :
 
