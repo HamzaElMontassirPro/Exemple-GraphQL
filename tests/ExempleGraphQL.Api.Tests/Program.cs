@@ -10,11 +10,26 @@ var tests = new (string Name, Func<Task> Run)[]
     ("returns GraphQL validation errors", ReturnsGraphQLValidationErrors),
     ("rejects duplicate repository creation", RejectsDuplicates)
 };
+var failures = new List<(string Name, Exception Error)>();
 
 foreach (var test in tests)
 {
-    await test.Run();
-    Console.WriteLine($"PASS {test.Name}");
+    try
+    {
+        await test.Run();
+        Console.WriteLine($"PASS {test.Name}");
+    }
+    catch (Exception error)
+    {
+        failures.Add((test.Name, error));
+        Console.Error.WriteLine($"FAIL {test.Name}: {error.Message}");
+    }
+}
+
+if (failures.Count > 0)
+{
+    Console.Error.WriteLine($"{failures.Count} test(s) failed.");
+    Environment.ExitCode = 1;
 }
 
 static async Task<TestServer> StartServerAsync()

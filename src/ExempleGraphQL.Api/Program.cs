@@ -1,5 +1,4 @@
 using HotChocolate;
-using HotChocolate.Types;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = GraphQLApplication.Create(builder);
@@ -26,22 +25,22 @@ public static class GraphQLApplication
 
 public sealed class Query
 {
-    public IReadOnlyList<GitHubRepository> GetRepositories([Service] RepositoryStore store) => store.GetAll();
+    public IReadOnlyList<Repository> GetRepositories([Service] RepositoryStore store) => store.GetAll();
 
-    public GitHubRepository? GetRepository(string owner, string name, [Service] RepositoryStore store) =>
+    public Repository? GetRepository(string owner, string name, [Service] RepositoryStore store) =>
         store.Find(owner, name);
 }
 
 public sealed class Mutation
 {
-    public GitHubRepository CreateRepository(RepositoryInput input, [Service] RepositoryStore store) =>
+    public Repository CreateRepository(RepositoryInput input, [Service] RepositoryStore store) =>
         store.Create(input);
 }
 
 public sealed class RepositoryStore
 {
     private readonly object syncRoot = new();
-    private readonly List<GitHubRepository> repositories =
+    private readonly List<Repository> repositories =
     [
         new(
             "1",
@@ -52,7 +51,7 @@ public sealed class RepositoryStore
     ];
     private int nextId = 2;
 
-    public IReadOnlyList<GitHubRepository> GetAll()
+    public IReadOnlyList<Repository> GetAll()
     {
         lock (syncRoot)
         {
@@ -60,7 +59,7 @@ public sealed class RepositoryStore
         }
     }
 
-    public GitHubRepository? Find(string owner, string name)
+    public Repository? Find(string owner, string name)
     {
         lock (syncRoot)
         {
@@ -68,7 +67,7 @@ public sealed class RepositoryStore
         }
     }
 
-    public GitHubRepository Create(RepositoryInput input)
+    public Repository Create(RepositoryInput input)
     {
         lock (syncRoot)
         {
@@ -77,7 +76,7 @@ public sealed class RepositoryStore
                 throw new GraphQLException("Repository already exists.");
             }
 
-            var repository = new GitHubRepository(
+            var repository = new Repository(
                 (nextId++).ToString(),
                 input.Owner,
                 input.Name,
@@ -89,13 +88,12 @@ public sealed class RepositoryStore
         }
     }
 
-    private static bool Matches(GitHubRepository repository, string owner, string name) =>
+    private static bool Matches(Repository repository, string owner, string name) =>
         string.Equals(repository.Owner, owner, StringComparison.OrdinalIgnoreCase)
         && string.Equals(repository.Name, name, StringComparison.OrdinalIgnoreCase);
 }
 
-[GraphQLName("Repository")]
-public sealed record GitHubRepository(
+public sealed record Repository(
     string Id,
     string Owner,
     string Name,
