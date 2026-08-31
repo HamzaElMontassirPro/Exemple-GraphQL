@@ -47,6 +47,18 @@ describe('resolvers GraphQL', () => {
     assert.equal(project, null);
   });
 
+  it('crée un projet', () => {
+    const project = resolvers.Mutation.createProject(null, {
+      input: {
+        name: 'Nouveau projet',
+        description: 'Projet créé pendant le test.',
+      },
+    });
+
+    assert.equal(project.name, 'Nouveau projet');
+    assert.equal(resolvers.Query.project(null, { id: project.id }).description, 'Projet créé pendant le test.');
+  });
+
   it('crée une tâche dans un projet existant', () => {
     const task = resolvers.Mutation.createTask(null, {
       input: {
@@ -75,6 +87,14 @@ describe('resolvers GraphQL', () => {
       status: 'DONE',
     });
 
+    assert.equal(task, null);
+  });
+
+  it('supprime une tâche', () => {
+    const deleted = resolvers.Mutation.deleteTask(null, { id: 'task-2' });
+    const task = resolvers.Query.task(null, { id: 'task-2' });
+
+    assert.equal(deleted, true);
     assert.equal(task, null);
   });
 

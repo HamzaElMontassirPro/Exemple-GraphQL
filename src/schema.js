@@ -135,10 +135,12 @@ export const resolvers = {
         return null;
       }
 
-      for (const [key, value] of Object.entries(input)) {
-        if (value !== undefined) {
-          project[key] = value;
-        }
+      if (input.name !== undefined) {
+        project.name = input.name;
+      }
+
+      if (input.description !== undefined) {
+        project.description = input.description;
       }
 
       return project;
