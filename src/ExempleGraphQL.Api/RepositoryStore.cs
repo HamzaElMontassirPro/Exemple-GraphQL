@@ -48,7 +48,7 @@ public sealed class RepositoryStore
             }
 
             var repository = new Repository(
-                Interlocked.Increment(ref nextId).ToString(),
+                (++nextId).ToString(),
                 input.Owner,
                 input.Name,
                 input.Description,
