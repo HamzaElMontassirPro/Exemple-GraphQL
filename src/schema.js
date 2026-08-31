@@ -37,6 +37,10 @@ const defaultRepositories = [
 
 function createRepositoryStore(initialRepositories = defaultRepositories) {
   const repositories = initialRepositories.map((repository) => ({ ...repository }));
+  let nextId = repositories.reduce((maxId, repository) => {
+    const id = Number(repository.id);
+    return Number.isFinite(id) && id > maxId ? id : maxId;
+  }, 0) + 1;
 
   return {
     repositories: () => repositories,
@@ -46,13 +50,14 @@ function createRepositoryStore(initialRepositories = defaultRepositories) {
     ) || null,
     createRepository: ({ input }) => {
       const repository = {
-        id: String(repositories.length + 1),
+        id: String(nextId),
         owner: input.owner,
         name: input.name,
         description: input.description || null,
         url: `https://github.com/${input.owner}/${input.name}`
       };
 
+      nextId += 1;
       repositories.push(repository);
       return repository;
     }

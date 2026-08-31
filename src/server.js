@@ -54,13 +54,13 @@ function createGraphQLServer(rootValue = createRepositoryStore()) {
     const { pathname } = new URL(request.url, 'http://localhost');
 
     if (pathname !== '/graphql') {
-      sendJson(response, 404, { error: 'Route introuvable. Utilisez /graphql.' });
+      sendJson(response, 404, { error: 'Route not found. Use /graphql.' });
       return;
     }
 
     if (request.method !== 'POST') {
       response.setHeader('allow', 'POST');
-      sendJson(response, 405, { error: 'Méthode non autorisée. Utilisez POST.' });
+      sendJson(response, 405, { error: 'Method not allowed. Use POST.' });
       return;
     }
 
@@ -69,16 +69,16 @@ function createGraphQLServer(rootValue = createRepositoryStore()) {
       payload = await readJsonBody(request);
     } catch (error) {
       if (error.code === 'PAYLOAD_TOO_LARGE') {
-        sendJson(response, 413, { error: 'La requête est trop volumineuse.' });
+        sendJson(response, 413, { error: 'Request payload is too large.' });
         return;
       }
 
-      sendJson(response, 400, { error: 'JSON invalide.' });
+      sendJson(response, 400, { error: 'Invalid JSON.' });
       return;
     }
 
     if (!payload.query) {
-      sendJson(response, 400, { error: 'Le champ query est obligatoire.' });
+      sendJson(response, 400, { error: 'The query field is required.' });
       return;
     }
 

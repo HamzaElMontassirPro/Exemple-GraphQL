@@ -57,7 +57,7 @@ test('creates and retrieves a GitHub repository', async () => {
     const mutation = await postGraphQL(port, {
       query: `
         mutation AddRepository($input: RepositoryInput!) {
-          createRepository(input: $input) { owner name url description }
+          createRepository(input: $input) { id owner name url description }
         }
       `,
       variables: {
@@ -71,6 +71,7 @@ test('creates and retrieves a GitHub repository', async () => {
 
     assert.equal(mutation.status, 200);
     assert.deepEqual(mutation.body.data.createRepository, {
+      id: '2',
       owner: 'octocat',
       name: 'Hello-World',
       url: 'https://github.com/octocat/Hello-World',
@@ -78,7 +79,7 @@ test('creates and retrieves a GitHub repository', async () => {
     });
 
     const query = await postGraphQL(port, {
-      query: '{ repository(owner: "octocat", name: "hello-world") { owner name url } }'
+      query: '{ repository(owner: "octocat", name: "Hello-World") { owner name url } }'
     });
 
     assert.equal(query.status, 200);
