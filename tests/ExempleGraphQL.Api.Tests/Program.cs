@@ -2,6 +2,9 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.DependencyInjection;
 
 var tests = new (string Name, Func<Task> Run)[]
 {
@@ -43,7 +46,12 @@ static async Task<TestServer> StartServerAsync()
     var app = GraphQLApplication.Create(builder);
     await app.StartAsync();
 
-    var address = app.Urls.Single();
+    var address = app.Services
+        .GetRequiredService<IServer>()
+        .Features
+        .Get<IServerAddressesFeature>()!
+        .Addresses
+        .Single();
     return new TestServer(app, new HttpClient { BaseAddress = new Uri(address) });
 }
 
