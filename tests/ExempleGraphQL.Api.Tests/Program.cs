@@ -32,7 +32,7 @@ foreach (var test in tests)
 if (failures.Count > 0)
 {
     Console.Error.WriteLine($"{failures.Count} test(s) failed.");
-    Environment.ExitCode = 1;
+    Environment.Exit(1);
 }
 
 static async Task<TestServer> StartServerAsync()
