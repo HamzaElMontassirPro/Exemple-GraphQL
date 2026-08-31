@@ -72,6 +72,20 @@ describe('resolvers GraphQL', () => {
     assert.equal(resolvers.Task.project(task).id, 'project-1');
   });
 
+  it('refuse de créer une tâche dans un projet introuvable', () => {
+    assert.throws(
+      () =>
+        resolvers.Mutation.createTask(null, {
+          input: {
+            title: 'Tâche impossible',
+            description: 'Projet inconnu.',
+            projectId: 'project-404',
+          },
+        }),
+      /Projet introuvable\./,
+    );
+  });
+
   it('met à jour le statut d’une tâche', () => {
     const task = resolvers.Mutation.updateTaskStatus(null, {
       id: 'task-2',
