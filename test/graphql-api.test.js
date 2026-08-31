@@ -108,3 +108,33 @@ test('returns GraphQL errors with an HTTP 200 response', async () => {
     await close(server);
   }
 });
+
+test('rejects duplicate repository creation', async () => {
+  const server = createGraphQLServer();
+  const port = await listen(server);
+  const body = {
+    query: `
+      mutation AddRepository($input: RepositoryInput!) {
+        createRepository(input: $input) { id }
+      }
+    `,
+    variables: {
+      input: {
+        owner: 'octocat',
+        name: 'Hello-World'
+      }
+    }
+  };
+
+  try {
+    const firstResponse = await postGraphQL(port, body);
+    const duplicateResponse = await postGraphQL(port, body);
+
+    assert.equal(firstResponse.status, 200);
+    assert.equal(firstResponse.body.data.createRepository.id, '2');
+    assert.equal(duplicateResponse.status, 200);
+    assert.match(duplicateResponse.body.errors[0].message, /already exists/);
+  } finally {
+    await close(server);
+  }
+});

@@ -49,6 +49,15 @@ function createRepositoryStore(initialRepositories = defaultRepositories) {
         && item.name.toLowerCase() === name.toLowerCase()
     ) || null,
     createRepository: ({ input }) => {
+      const existingRepository = repositories.find(
+        (item) => item.owner.toLowerCase() === input.owner.toLowerCase()
+          && item.name.toLowerCase() === input.name.toLowerCase()
+      );
+
+      if (existingRepository) {
+        throw new Error('Repository already exists.');
+      }
+
       const repository = {
         id: String(nextId),
         owner: input.owner,

@@ -8,39 +8,65 @@ function readJsonBody(request) {
   return new Promise((resolve, reject) => {
     let body = '';
     let size = 0;
-    let tooLarge = false;
+    let settled = false;
 
-    request.on('data', (chunk) => {
+    const cleanup = () => {
+      request.off('data', onData);
+      request.off('end', onEnd);
+      request.off('error', onError);
+    };
+
+    const resolveOnce = (payload) => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      cleanup();
+      resolve(payload);
+    };
+
+    const rejectOnce = (error) => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      cleanup();
+      request.resume();
+      reject(error);
+    };
+
+    const onData = (chunk) => {
       size += chunk.length;
       if (size > maxBodySize) {
-        tooLarge = true;
+        const error = new Error('Payload too large');
+        error.code = 'PAYLOAD_TOO_LARGE';
+        rejectOnce(error);
         return;
       }
 
       body += chunk;
-    });
+    };
 
-    request.on('end', () => {
-      if (tooLarge) {
-        const error = new Error('Payload too large');
-        error.code = 'PAYLOAD_TOO_LARGE';
-        reject(error);
-        return;
-      }
-
+    const onEnd = () => {
       if (!body) {
-        resolve({});
+        resolveOnce({});
         return;
       }
 
       try {
-        resolve(JSON.parse(body));
+        resolveOnce(JSON.parse(body));
       } catch (error) {
-        reject(error);
+        rejectOnce(error);
       }
-    });
+    };
 
-    request.on('error', reject);
+    const onError = (error) => rejectOnce(error);
+
+    request.on('data', onData);
+    request.on('end', onEnd);
+    request.on('error', onError);
   });
 }
 
